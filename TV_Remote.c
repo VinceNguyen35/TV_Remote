@@ -126,163 +126,220 @@ void SysTick_Wait10ms(unsigned long delay){
 /************************************************************************************************
 	INFRARED MODULATION
 ************************************************************************************************/
+// 40KHz ->t=1/f-> 1/40e6 -> 25e-6
+// 50MHz ->t=1/f-> 1/50e9 -> 20e-9
+// 25e-6/20e-9 = 1250 / 2
 void HighSignal(void) {
 	GPIO_PORTB_DATA_R = 0xFF;
-	SysTick_Wait(600);
+	SysTick_Wait(625);
 	GPIO_PORTB_DATA_R = 0x00;
-	SysTick_Wait(600);
+	SysTick_Wait(625);
 }
 
 void LowSignal(void) {
 	GPIO_PORTB_DATA_R = 0x00;
-	SysTick_Wait(600);
+	SysTick_Wait(625);
 	GPIO_PORTB_DATA_R = 0x00;
-	SysTick_Wait(600);
+	SysTick_Wait(625);
 }
 
-// 900us high = 34 pulses
-// 450us low = 17 pulses
+// 1.2ms high = 48 pulses
+// 600us low = 24 pulses
 void Logic1(void)	{ 
-	for(i = 0; i < 34; i++) {
+	for(i = 0; i < 48; i++) {
 		HighSignal();
 	}
 	
-	for(i = 0; i < 17; i++) {
+	for(i = 0; i < 24; i++) {
 		LowSignal();
 	}
 }
 
-// 450us high = 17 pulses
-// 450us low = 17 pulses
+// 600us high = 24 pulses
+// 600us low = 24 pulses
 void Logic0(void)	{ 
-	for(i = 0; i < 17; i++) {
+	for(i = 0; i < 24; i++) {
 		HighSignal();
 	}
 	
-	for(i = 0; i < 17; i++) {
+	for(i = 0; i < 24; i++) {
 		LowSignal();
 	}
 }
 
-// 1ms high = 38 pulses
-// 800us low = 30 pulses
+// 2.4ms high = 96 pulses
+// 600us low = 24 pulses
 void StartPulse(void)	{ 
-	for(i = 0; i < 38; i++) {
+	for(i = 0; i < 96; i++) {
 		HighSignal();
 	}
 	
-	for(i = 0; i < 30; i++) {
+	for(i = 0; i < 24; i++) {
 		LowSignal();
 	}
 }
 
-void ModulateAddress(long n) {
-	switch(n) {
-		case 0:
-			Logic0();
-			Logic0();
-			break;
-		case 1:
-			Logic0();
-			Logic1();
-			break;
-		case 2:
-			Logic1();
-			Logic0();
-			break;
-		case 3:
-			Logic1();
-			Logic1();
-			break;
-		
-		default:
-			break;
-	}
+void ModulateAddress() {
+// We only care about the TV functions, so only the TV address is used
+	Logic0();
+	Logic0();
+	Logic0();
+	Logic0();
+	Logic1();
 }
 
-void ModulateCommand(char c) {
+void ModulateCommand(char c[2]) {
 	switch(c) {
 		case '0':
+		// Digit key 0
 			Logic0();
 			Logic0();
 			Logic0();
-			CRLF();
+			Logic0();
+			Logic0();
+			Logic0();
+			Logic0();
 			break;
 		case '1':
+		// Digit key 1
+			Logic0();
+			Logic0();
+			Logic0();
+			Logic0();
 			Logic0();
 			Logic0();
 			Logic1();
-			CRLF();
 			break;
 		case '2':
+		// Digit key 2
+			Logic0();
+			Logic0();
+			Logic0();
+			Logic0();
 			Logic0();
 			Logic1();
 			Logic0();	
-			CRLF();
 			break;
 		case '3':
+		// Digit key 3
+			Logic0();
+			Logic0();
+			Logic0();
+			Logic0();
 			Logic0();
 			Logic1();
 			Logic1();
-			CRLF();
 			break;
 		case '4':
+		// Digit key 4
+			Logic0();
+			Logic0();
+			Logic0();
+			Logic0();
 			Logic1();
 			Logic0();
 			Logic0();
-			CRLF();
 			break;
 		case '5':
+		// Digit key 5
+			Logic0();
+			Logic0();
+			Logic0();
+			Logic0();
 			Logic1();
 			Logic0();
 			Logic1();
-			CRLF();
 			break;
 		case '6':
+		// Digit key 6
+			Logic0();
+			Logic0();
+			Logic0();
+			Logic0();
 			Logic1();
 			Logic1();
 			Logic0();
-			CRLF();
 			break;
 		case '7':
+		// Digit key 7
+			Logic0();
+			Logic0();
+			Logic0();
+			Logic0();
 			Logic1();
 			Logic1();
 			Logic1();
-			CRLF();
 			break;
-		
-		default:
+		case '8':
+		// Digit key 8
+			Logic0();
+			Logic0();
+			Logic0();
+			Logic1();
+			Logic0();
+			Logic0();
+			Logic0();
 			break;
-	}
-}
-
-void test(long n) {
-	switch(n) {
-		case 0:
-			read[0] = '0';
+		case '9':
+		// Digit key 9
+			Logic0();
+			Logic0();
+			Logic0();
+			Logic1();
+			Logic0();
+			Logic0();
+			Logic1();
 			break;
-		case 1:
-			read[0] = '1';
+		case '16':
+		// Channel +
+			Logic0();
+			Logic0();
+			Logic1();
+			Logic0();
+			Logic0();
+			Logic0();
+			Logic0();
 			break;
-		case 2:
-			read[0] = '2';
+		case '17':
+		// Channel -
+			Logic0();
+			Logic0();
+			Logic1();
+			Logic0();
+			Logic0();
+			Logic0();
+			Logic1();
 			break;
-		case 3:
-			read[0] = '3';
+		case '18':
+		// Volume +
+			Logic0();
+			Logic0();
+			Logic1();
+			Logic0();
+			Logic0();
+			Logic1();
+			Logic0();
 			break;
-		case 4:
-			read[0] = '4';
+		case '19':
+		// Volume -
+			Logic0();
+			Logic0();
+			Logic1();
+			Logic0();
+			Logic0();
+			Logic1();
+			Logic1();
 			break;
-		case 5:
-			read[0] = '5';
+		case '21':
+		// Power
+			Logic0();
+			Logic0();
+			Logic1();
+			Logic0();
+			Logic1();
+			Logic0();
+			Logic1();
 			break;
-		case 6:
-			read[0] = '6';
-			break;
-		case 7:
-			read[0] = '7';
-			break;
-		
 		default:
 			break;
 	}
@@ -298,13 +355,13 @@ int main(void){
 	UART_Init();
 	SysTick_Init();
 	GPIO_PORTF_DATA_R = 0x02;
-	UART_OutString("\r\nEnter a command:\r\n");
-	UART_InString(read, 5);
-	CRLF();
 	while(1){
+		UART_OutString("\r\nEnter a command:\r\n");
+		UART_InString(read, 5);
+		CRLF();
 		StartPulse();
-		ModulateAddress(device_number);
-		ModulateCommand(read[0]);
+		ModulateAddress();
+		ModulateCommand(read);
 		SysTick_Wait(60000);
 	}
 }
