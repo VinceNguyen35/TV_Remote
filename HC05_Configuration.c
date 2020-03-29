@@ -144,8 +144,8 @@ int main(void){
 	Delay();
 
 	UART_transmit_String("Lab bluetooth configuration\r\n");
-	UART_transmit_String("AT+NAME=VinceEthan\r\n");
-	sendCommandBT("AT+NAME=VinceEthan\r\n");
+	UART_transmit_String("AT+NAME=Vince\r\n");
+	sendCommandBT("AT+NAME=Vince\r\n");
 	respondFromBT();
 	Delay();
 	
